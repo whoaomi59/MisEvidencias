@@ -32,21 +32,24 @@ export default function Cargue() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-10">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+    <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-10">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
         Gestión de Evidencias
       </h1>
 
       {meses.map((mes) => (
-        <div key={mes.id} className="bg-white shadow rounded-xl p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-blue-800">
+        <div
+          key={mes.id}
+          className="bg-white shadow rounded-xl p-4 sm:p-5 space-y-4"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h2 className="text-xl sm:text-2xl font-semibold text-blue-800">
               {mes.nombre}
             </h2>
             <div className="flex gap-2">
               <button
                 onClick={() => crearCarpeta(mes.id)}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white text-sm sm:text-base rounded hover:bg-blue-700 transition"
               >
                 Nueva Carpeta 📁
               </button>
@@ -60,9 +63,9 @@ export default function Cargue() {
                   href={`/Evidencia/${carpeta.id}/${
                     mes.nombre + "," + carpeta.nombre
                   }`}
-                  className="flex items-center justify-between p-4 bg-gray-100 rounded hover:bg-gray-200 transition"
+                  className="flex items-center justify-between p-4 bg-gray-100 rounded hover:bg-gray-200 transition text-sm sm:text-base"
                 >
-                  <span className="text-gray-800 font-medium">
+                  <span className="text-gray-800 font-medium truncate">
                     {carpeta.nombre}
                   </span>
                   <span className="text-xl">🗂️</span>
