@@ -36,23 +36,26 @@ export default function MesesPanel() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Mis Evidencias</h1>
+    <div className="p-4 sm:p-6 space-y-6">
+      <h1 className="text-xl sm:text-2xl font-bold">Mis Evidencias</h1>
 
       {/* Crear nuevo mes */}
-      <div className="bg-white shadow-md rounded-xl p-4 space-y-2">
+      <div className="bg-white shadow-md rounded-xl p-4 space-y-4">
         <h2 className="text-lg font-semibold">Crear una Actividad</h2>
+
         <input
           type="text"
           placeholder="Nombre del la Actividad (Ej. GC_1004419254_22225_MAY_2025)"
-          className="border rounded px-3 py-1 w-full"
+          className="border rounded px-3 py-2 w-full text-sm"
           value={nuevoMes.nombre}
           onChange={(e) => setNuevoMes({ ...nuevoMes, nombre: e.target.value })}
         />
-        <div className="flex gap-2">
+
+        {/* Fechas responsive */}
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="date"
-            className="border rounded px-3 py-1"
+            className="border rounded px-3 py-2 w-full text-sm"
             value={nuevoMes.fecha_inicio}
             onChange={(e) =>
               setNuevoMes({ ...nuevoMes, fecha_inicio: e.target.value })
@@ -60,27 +63,31 @@ export default function MesesPanel() {
           />
           <input
             type="date"
-            className="border rounded px-3 py-1"
+            className="border rounded px-3 py-2 w-full text-sm"
             value={nuevoMes.fecha_fin}
             onChange={(e) =>
               setNuevoMes({ ...nuevoMes, fecha_fin: e.target.value })
             }
           />
         </div>
+
         <button
           onClick={crearMes}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm w-full sm:w-auto"
         >
-          Crear Actvidad 🗃️​
+          Crear Actividad 🗃️​
         </button>
       </div>
 
       {/* Lista de meses */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {meses.map((mes) => (
-          <div key={mes.id} className="bg-white shadow rounded-lg p-4">
-            <div className="p-5">
-              <h3 className="text-2xl font-semibold text-blue-800">
+          <div
+            key={mes.id}
+            className="bg-white shadow rounded-lg p-4 flex flex-col justify-between"
+          >
+            <div className="space-y-1">
+              <h3 className="text-lg sm:text-xl font-semibold text-blue-800">
                 {mes.nombre}
               </h3>
               <p className="text-sm text-gray-500">
@@ -88,7 +95,7 @@ export default function MesesPanel() {
                 {new Date(mes.fecha_fin).toLocaleDateString()}
               </p>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col mt-4 gap-2">
               <button
                 onClick={() => navigate(`/mes/${mes.id}`)}
                 className="bg-green-600 text-white px-3 py-1 text-sm rounded hover:bg-green-700"
