@@ -61,7 +61,7 @@ export default function Cargue() {
               <li key={carpeta.id}>
                 <a
                   href={`/Evidencia/${carpeta.id}/${
-                    mes.nombre + "," + carpeta.nombre
+                    mes.nombre + ", " + carpeta.nombre
                   }`}
                   className="flex items-center justify-between p-4 bg-gray-100 rounded hover:bg-gray-200 transition text-sm sm:text-base"
                 >
