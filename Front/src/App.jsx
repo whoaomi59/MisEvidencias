@@ -5,7 +5,8 @@ import EvidenciaDetalle from "./view/evidencias/EvidenciaDetalle";
 import MesesPanel from "./view/home";
 import axios from "axios";
 
-export const URL = "http://localhost/MisEvindencias/API/";
+/* export const URL = "http://localhost/MisEvindencias/API/"; */
+export const URL = "https://asuprocolombiasas.com/php/MisEvidencias/";
 
 function App() {
   axios.defaults.baseURL = URL;
