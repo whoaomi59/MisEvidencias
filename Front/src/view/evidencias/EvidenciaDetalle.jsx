@@ -10,6 +10,7 @@ export default function EvidenciaDetalle() {
   const [imagenes, setImagenes] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [refresh, setrefresh] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,15 +30,8 @@ export default function EvidenciaDetalle() {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      // recargar
-      const res = await axios.get(`/evidencia.php`, {
-        params: { carpeta_id: id },
-      });
       setLoading(false);
-      setData({ evidencias: res.data });
-
-      // limpiar
+      setrefresh((prev) => !prev);
       setNombre("");
       setImagenes([]);
       setShowForm(false);
@@ -60,7 +54,7 @@ export default function EvidenciaDetalle() {
     };
 
     fetchEvidencias();
-  }, [id]);
+  }, [id, refresh]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">

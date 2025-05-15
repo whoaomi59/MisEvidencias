@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { URL } from "../../App";
 
 export default function MesesPanel() {
   const [meses, setMeses] = useState([]);
@@ -29,10 +30,7 @@ export default function MesesPanel() {
   };
 
   const descargarMes = (mesId) => {
-    window.open(
-      `http://localhost/MisEvindencias/API/descargar_mes.php?id=${mesId}`,
-      "_blank"
-    );
+    window.open(`${URL}/descargar_mes.php?id=${mesId}`, "_blank");
   };
 
   return (
