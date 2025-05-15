@@ -27,10 +27,6 @@ export default function Cargue() {
     setMeses(res.data);
   };
 
-  const descargarMes = (mesId) => {
-    window.open(`/descargar_mes.php?id=${mesId}`, "_blank");
-  };
-
   return (
     <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-10">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
