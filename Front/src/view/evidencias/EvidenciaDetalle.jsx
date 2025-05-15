@@ -59,59 +59,66 @@ export default function EvidenciaDetalle() {
   }, [id]);
 
   return (
-    <div className="p-6 space-y-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">{name}</h1>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      {/* Título y botón */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">{name}</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
           {showForm ? "Cancelar" : "Evidencia 📋​"}
         </button>
       </div>
 
+      {/* Formulario para nueva evidencia */}
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 bg-gray-100 p-4 rounded"
+          className="space-y-4 bg-gray-100 p-4 rounded shadow"
         >
           <div>
-            <label className="block text-sm font-medium">
+            <label className="block text-sm font-medium mb-1">
               Nombre de la evidencia
             </label>
             <input
               type="text"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
-              className="w-full border rounded p-2 mt-1"
+              className="w-full border rounded px-3 py-2"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Subir imágenes</label>
+            <label className="block text-sm font-medium mb-1">
+              Subir imágenes
+            </label>
             <input
               type="file"
               multiple
               accept="image/*"
               onChange={(e) => setImagenes(e.target.files)}
-              className="mt-1"
+              className="w-full"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
           >
             Guardar evidencia
           </button>
         </form>
       )}
 
-      {data.evidencias?.map((evidencia) => (
-        <EvidenciaCard key={evidencia.id} evidencia={evidencia} />
-      ))}
+      {/* Lista de evidencias */}
+      <div className="space-y-4">
+        {data.evidencias?.map((evidencia) => (
+          <EvidenciaCard key={evidencia.id} evidencia={evidencia} />
+        ))}
+      </div>
     </div>
   );
 }
