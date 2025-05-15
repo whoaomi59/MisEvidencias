@@ -9,6 +9,7 @@ export default function EvidenciaDetalle() {
   const [nombre, setNombre] = useState("");
   const [imagenes, setImagenes] = useState([]);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +23,7 @@ export default function EvidenciaDetalle() {
     }
 
     try {
+      setLoading(true);
       await axios.post("/evidencia.php", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -32,6 +34,7 @@ export default function EvidenciaDetalle() {
       const res = await axios.get(`/evidencia.php`, {
         params: { carpeta_id: id },
       });
+      setLoading(false);
       setData({ evidencias: res.data });
 
       // limpiar
@@ -39,6 +42,7 @@ export default function EvidenciaDetalle() {
       setImagenes([]);
       setShowForm(false);
     } catch (err) {
+      setLoading(false);
       console.error("Error al guardar evidencia:", err);
     }
   };
@@ -74,7 +78,7 @@ export default function EvidenciaDetalle() {
       {/* Formulario para nueva evidencia */}
       {showForm && (
         <form
-          onSubmit={handleSubmit}
+          onSubmit={loading ? null : handleSubmit}
           className="space-y-4 bg-gray-100 p-4 rounded shadow"
         >
           <div>
@@ -108,7 +112,7 @@ export default function EvidenciaDetalle() {
             type="submit"
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
           >
-            Guardar evidencia
+            {loading ? "Loading..." : "Guardar evidencia"}
           </button>
         </form>
       )}
