@@ -23,6 +23,17 @@ if (isset($_GET['id'])) {
 
         $carpetas = [];
         while ($carpeta = $queryCarpetas->fetch_assoc()) {
+            $carpetaId = $carpeta['id'];
+
+            // Consulta archivos por carpeta
+            $queryArchivos = $conn->query("SELECT id, nombre FROM evidencias WHERE carpeta_id = $carpetaId");
+
+            $archivos = [];
+            while ($archivo = $queryArchivos->fetch_assoc()) {
+                $archivos[] = $archivo;
+            }
+
+            $carpeta['archivos'] = $archivos; // añadir archivos a la carpeta
             $carpetas[] = $carpeta;
         }
 
