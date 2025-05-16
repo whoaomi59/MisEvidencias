@@ -25,11 +25,13 @@ export default function Cargue() {
     const res = await axios.get(`/meses_con_carpetas.php?id=${mesId}`);
     setMes(res.data);
   };
+
   return (
     <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-10">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
         Gestión de Evidencias
       </h1>
+
       {mes && mes.carpetas ? (
         <div
           key={mes.id}
@@ -49,6 +51,7 @@ export default function Cargue() {
             </div>
           </div>
 
+          {/* 📁 Lista de carpetas */}
           <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {mes.carpetas.map((carpeta) => (
               <li key={carpeta.id}>
@@ -66,6 +69,22 @@ export default function Cargue() {
               </li>
             ))}
           </ul>
+          <div className="text-sm text-gray-700 space-y-1">
+            <p>
+              Total de carpetas: <strong>{mes.carpetas.length}</strong> 📁
+            </p>
+            <p>
+              Total de archivos:
+              <strong>
+                {mes.carpetas.reduce((total, carpeta) => {
+                  return (
+                    total + (carpeta.archivos ? carpeta.archivos.length : 0)
+                  );
+                }, 0)}
+              </strong>
+              📑​
+            </p>
+          </div>
         </div>
       ) : (
         <p className="text-gray-600">Cargando datos del mes...</p>
