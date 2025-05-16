@@ -10,20 +10,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 include 'config.php';
 
-$queryMeses = $conn->query("SELECT * FROM meses ORDER BY fecha_inicio DESC");
-$meses = [];
+// Verifica si se proporciona un ID de mes
+if (isset($_GET['id'])) {
+    $mesId = intval($_GET['id']);
 
-while ($mes = $queryMeses->fetch_assoc()) {
-  $mesId = $mes['id'];
-  $queryCarpetas = $conn->query("SELECT id, nombre FROM carpetas WHERE mes_id = $mesId");
+    // Consulta solo el mes correspondiente
+    $queryMes = $conn->query("SELECT * FROM meses WHERE id = $mesId");
 
-  $carpetas = [];
-  while ($carpeta = $queryCarpetas->fetch_assoc()) {
-    $carpetas[] = $carpeta;
-  }
+    if ($mes = $queryMes->fetch_assoc()) {
+        // Busca las carpetas relacionadas con ese mes
+        $queryCarpetas = $conn->query("SELECT id, nombre FROM carpetas WHERE mes_id = $mesId");
 
-  $mes['carpetas'] = $carpetas;
-  $meses[] = $mes;
+        $carpetas = [];
+        while ($carpeta = $queryCarpetas->fetch_assoc()) {
+            $carpetas[] = $carpeta;
+        }
+
+        $mes['carpetas'] = $carpetas;
+
+        echo json_encode($mes);
+    } else {
+        http_response_code(404);
+        echo json_encode(["error" => "Mes no encontrado"]);
+    }
+} else {
+    http_response_code(400);
+    echo json_encode(["error" => "Falta el parámetro 'id'"]);
 }
-
-echo json_encode($meses);
+?>

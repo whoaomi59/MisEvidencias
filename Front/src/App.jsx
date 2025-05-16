@@ -5,7 +5,7 @@ import EvidenciaDetalle from "./view/evidencias/EvidenciaDetalle";
 import MesesPanel from "./view/home";
 import axios from "axios";
 
-/* export const URL = "http://localhost/MisEvindencias/API/"; */
+/* export const URL = "http://localhost/MisEvindencias/API/";  */
 export const URL = "https://asuprocolombiasas.com/php/MisEvidencias/";
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<MesesPanel />} />
-        <Route path="/mes/:mesId" element={<Cargue />} />
+        <Route path="/mes/:id" element={<Cargue />} />
         <Route path="/Evidencia/:id/:name" element={<EvidenciaDetalle />} />
         <Route path="*" element={<h1>Not Fount</h1>} />
       </Routes>

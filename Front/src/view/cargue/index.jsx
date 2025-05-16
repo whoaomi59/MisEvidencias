@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function Cargue() {
-  const [meses, setMeses] = useState([]);
+  const [mes, setMes] = useState({});
+  const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Carga los meses y sus carpetas
-    axios.get("/meses_con_carpetas.php").then((res) => {
-      setMeses(res.data);
+    axios.get(`/meses_con_carpetas.php?id=${id}`).then((res) => {
+      setMes(res.data);
     });
   }, []);
 
@@ -22,18 +22,16 @@ export default function Cargue() {
       nombre: nombre,
     });
 
-    // Recargar meses
-    const res = await axios.get("/meses_con_carpetas.php");
-    setMeses(res.data);
+    // Refrescar datos
+    const res = await axios.get(`/meses_con_carpetas.php?id=${mesId}`);
+    setMes(res.data);
   };
-
   return (
     <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-10">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
         Gestión de Evidencias
       </h1>
-
-      {meses.map((mes) => (
+      {mes && mes.carpetas ? (
         <div
           key={mes.id}
           className="bg-white shadow rounded-xl p-4 sm:p-5 space-y-4"
@@ -70,7 +68,9 @@ export default function Cargue() {
             ))}
           </ul>
         </div>
-      ))}
+      ) : (
+        <p className="text-gray-600">Cargando datos del mes...</p>
+      )}
     </div>
   );
 }
