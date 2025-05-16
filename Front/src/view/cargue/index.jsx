@@ -51,7 +51,6 @@ export default function Cargue() {
             </div>
           </div>
 
-          {/* 📁 Lista de carpetas */}
           <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {mes.carpetas.map((carpeta) => (
               <li key={carpeta.id}>
