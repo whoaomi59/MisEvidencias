@@ -77,39 +77,42 @@ export default function MesesPanel() {
         </button>
       </div>
 
-      {/* Lista de meses */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {meses.map((mes) => (
-          <div
-            key={mes.id}
-            className="bg-white shadow rounded-lg p-4 flex flex-col justify-between"
-          >
-            <div className="space-y-1">
-              <h3 className="text-lg sm:text-xl font-semibold text-blue-800">
-                {mes.nombre}
-              </h3>
-              <p className="text-sm text-gray-500">
-                {new Date(mes.fecha_inicio).toLocaleDateString()} -{" "}
-                {new Date(mes.fecha_fin).toLocaleDateString()}
-              </p>
+      {meses ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {meses.map((mes) => (
+            <div
+              key={mes.id}
+              className="bg-white shadow rounded-lg p-4 flex flex-col justify-between"
+            >
+              <div className="space-y-1">
+                <h3 className="text-lg sm:text-xl font-semibold text-blue-800">
+                  {mes.nombre}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {new Date(mes.fecha_inicio).toLocaleDateString()} -{" "}
+                  {new Date(mes.fecha_fin).toLocaleDateString()}
+                </p>
+              </div>
+              <div className="flex flex-col mt-4 gap-2">
+                <button
+                  onClick={() => navigate(`/mes/${mes.id}`)}
+                  className="bg-green-600 text-white px-3 py-1 text-sm rounded hover:bg-green-700"
+                >
+                  Ver Carpetas
+                </button>
+                <button
+                  onClick={() => descargarMes(mes.id)}
+                  className="bg-gray-600 text-white px-3 py-1 text-sm rounded hover:bg-gray-800"
+                >
+                  Descargar PDF
+                </button>
+              </div>
             </div>
-            <div className="flex flex-col mt-4 gap-2">
-              <button
-                onClick={() => navigate(`/mes/${mes.id}`)}
-                className="bg-green-600 text-white px-3 py-1 text-sm rounded hover:bg-green-700"
-              >
-                Ver Carpetas
-              </button>
-              <button
-                onClick={() => descargarMes(mes.id)}
-                className="bg-gray-600 text-white px-3 py-1 text-sm rounded hover:bg-gray-800"
-              >
-                Descargar PDF
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-600">Cargando datos...</p>
+      )}
     </div>
   );
 }

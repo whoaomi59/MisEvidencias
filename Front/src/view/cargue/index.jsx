@@ -5,7 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function Cargue() {
   const [mes, setMes] = useState({});
   const { id } = useParams();
-  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(`/meses_con_carpetas.php?id=${id}`).then((res) => {
