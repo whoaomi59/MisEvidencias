@@ -47,7 +47,7 @@ if ($zip->open($zipFileName, ZipArchive::CREATE) !== TRUE) {
 }
 
 $archivosAgregados = 0;
-$pdfTempFiles = []; // To hold temp PDF paths for deleting after ZIP close
+$pdfTempFiles = []; // Para guardar rutas temporales de PDFs generados
 
 // Obtener carpetas del mes
 $sqlCarpetas = $conn->prepare("SELECT id, nombre FROM carpetas WHERE mes_id = ?");
@@ -89,15 +89,60 @@ while ($carpeta = $resultCarpetas->fetch_assoc()) {
 
         if (count($imagenes) > 0) {
             try {
-                // Crear PDF con mPDF
+                // Crear PDF con mPDF con compresión habilitada
                 $mpdf = new Mpdf([
-                    'tempDir' => __DIR__ . '/tmp'
+                    'tempDir' => __DIR__ . '/tmp',
+                    'compress' => true,
                 ]);
 
                 foreach ($imagenes as $imgPath) {
                     $mpdf->AddPage();
-                    // Imagen tamaño A4 (210x297 mm)
-                    $mpdf->Image($imgPath, 0, 0, 210, 297, '', '', true, false);
+                    
+                    // Comprimir y redimensionar imagen con GD antes de agregarla al PDF
+                    $imgInfo = getimagesize($imgPath);
+                    $mime = $imgInfo['mime'];
+                    $compressedImgPath = tempnam(sys_get_temp_dir(), 'compressed_') . '.jpg';
+
+                    switch ($mime) {
+                        case 'image/jpeg':
+                            $image = imagecreatefromjpeg($imgPath);
+                            break;
+                        case 'image/png':
+                            $image = imagecreatefrompng($imgPath);
+                            break;
+                        case 'image/gif':
+                            $image = imagecreatefromgif($imgPath);
+                            break;
+                        default:
+                            error_log("Formato de imagen no soportado: $imgPath");
+                            continue 2; // saltar esta imagen
+                    }
+
+                    // Redimensionar la imagen para que no exceda A4 aproximadamente (max ancho: 1240px, max alto: 1754px aprox en pixeles a 150DPI)
+                    $maxWidth = 1240;
+                    $maxHeight = 1754;
+                    $width = imagesx($image);
+                    $height = imagesy($image);
+                    $scale = min($maxWidth / $width, $maxHeight / $height, 1);
+
+                    if ($scale < 1) {
+                        $newWidth = (int)($width * $scale);
+                        $newHeight = (int)($height * $scale);
+                        $newImage = imagecreatetruecolor($newWidth, $newHeight);
+                        imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                        imagedestroy($image);
+                        $image = $newImage;
+                    }
+
+                    // Guardar imagen comprimida en JPEG con calidad 75
+                    imagejpeg($image, $compressedImgPath, 75);
+                    imagedestroy($image);
+
+                    // Agregar imagen comprimida al PDF en tamaño A4 (210x297 mm)
+                    $mpdf->Image($compressedImgPath, 0, 0, 210, 297, 'jpg', '', true, false);
+
+                    // Borrar imagen temporal comprimida
+                    @unlink($compressedImgPath);
                 }
 
                 // Guardar PDF temporal
@@ -108,11 +153,10 @@ while ($carpeta = $resultCarpetas->fetch_assoc()) {
                     $zipInternalPath = "$nombreMes/$carpetaName/$evidenciaNombre.pdf";
                     $zip->addFile($pdfTempPath, $zipInternalPath);
                     $archivosAgregados++;
-                    $pdfTempFiles[] = $pdfTempPath; // Save to delete later
+                    $pdfTempFiles[] = $pdfTempPath;
                     error_log("PDF agregado al ZIP: $zipInternalPath");
                 } else {
                     error_log("Error: PDF temporal no existe o está vacío: $pdfTempPath");
-                    // Delete pdf if empty or missing
                     if (file_exists($pdfTempPath)) {
                         unlink($pdfTempPath);
                     }
@@ -126,7 +170,7 @@ while ($carpeta = $resultCarpetas->fetch_assoc()) {
 
 $zip->close();
 
-// Delete all temp PDF files now
+// Borrar archivos PDF temporales
 foreach ($pdfTempFiles as $tempFile) {
     if (file_exists($tempFile)) {
         unlink($tempFile);
@@ -149,7 +193,6 @@ header('Content-Type: application/zip');
 header('Content-Disposition: attachment; filename="Evidencias_'.$nombreMes.'.zip"');
 header('Content-Length: ' . filesize($zipFileName));
 
-// Clean output buffer to prevent corruption
 while (ob_get_level()) {
     ob_end_clean();
 }
